@@ -2,6 +2,11 @@
 
 This project implements the recommended path: run your own `OpenClaw` gateway integration and let Omi Chat Tools invoke it through a simple webhook.
 
+## Documentation Index
+
+- Deployment runbook: [docs/deployment.md](docs/deployment.md)
+- Omi Chat Tool example payload/config: [docs/omi-chat-tool-example.json](docs/omi-chat-tool-example.json)
+
 ## Why this path
 
 - Full control over tool routing and payload shape.
@@ -22,9 +27,9 @@ flowchart LR
 
 ## Task Traceability
 
-1. Define bridge contract: [bridge.py](/Users/owlxshri/Downloads/openomi/src/omi_openclaw_bridge/bridge.py)
-2. Expose webhook endpoint/auth: [server.py](/Users/owlxshri/Downloads/openomi/src/omi_openclaw_bridge/server.py)
-3. Validate mapping and auth logic: [test_bridge.py](/Users/owlxshri/Downloads/openomi/tests/test_bridge.py), [test_server.py](/Users/owlxshri/Downloads/openomi/tests/test_server.py)
+1. Define bridge contract: [bridge.py](src/omi_openclaw_bridge/bridge.py)
+2. Expose webhook endpoint/auth: [server.py](src/omi_openclaw_bridge/server.py)
+3. Validate mapping and auth logic: [test_bridge.py](tests/test_bridge.py), [test_server.py](tests/test_server.py)
 4. Run verification suite: `python3 -m unittest discover -s tests -v`
 
 ## Environment Variables
@@ -46,6 +51,23 @@ export OPENCLAW_API_KEY="your-openclaw-key"
 export OMI_WEBHOOK_TOKEN="your-omi-webhook-token"
 PYTHONPATH=src python3 -m omi_openclaw_bridge
 ```
+
+## Run with Docker
+
+```bash
+docker build -t openomi-openclaw-bridge:local .
+docker run --rm -p 8080:8080 \
+  -e OPENCLAW_BASE_URL="https://gateway.yourdomain.com" \
+  -e OPENCLAW_DEFAULT_TOOL="tools.search" \
+  -e OPENCLAW_API_KEY="your-openclaw-key" \
+  -e OMI_WEBHOOK_TOKEN="your-omi-webhook-token" \
+  openomi-openclaw-bridge:local
+```
+
+## Deploy (Render Blueprint)
+
+This repo includes [render.yaml](render.yaml) for one-click Render Blueprint deployment.
+For full production setup and verification, follow [docs/deployment.md](docs/deployment.md).
 
 ## Omi Chat Tool Setup
 

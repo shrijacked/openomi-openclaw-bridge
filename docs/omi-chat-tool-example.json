@@ -1,0 +1,17 @@
+{
+  "name": "openclaw_tool_proxy",
+  "description": "Routes Omi Chat Tool calls to OpenClaw through the bridge service.",
+  "method": "POST",
+  "url": "https://<your-bridge-domain>/omi/chat-tools/openclaw",
+  "headers": {
+    "Authorization": "Bearer <OMI_WEBHOOK_TOKEN>",
+    "Content-Type": "application/json"
+  },
+  "body": {
+    "openclaw_tool": "tools.search",
+    "arguments": {
+      "query": "{{query}}"
+    },
+    "session_id": "{{session_id}}"
+  }
+}

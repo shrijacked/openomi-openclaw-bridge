@@ -5,7 +5,7 @@ import unittest
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from omi_openclaw_bridge.bridge import BridgeConfig, OmiOpenClawBridge
+from omi_openclaw_bridge.bridge import BridgeConfig, OmiOpenClawBridge, OpenClawGatewayClient
 
 
 class _FakeGatewayClient:
@@ -78,6 +78,26 @@ class OmiOpenClawBridgeTests(unittest.TestCase):
         self.assertEqual(fake_client.last_payload["input"], {"query": "latest metrics"})
         self.assertEqual(fake_client.last_payload["arguments"], {"query": "latest metrics"})
         self.assertEqual(fake_client.last_payload["session_id"], "session-123")
+
+
+class OpenClawGatewayClientConfigTests(unittest.TestCase):
+    def test_rejects_base_url_without_http_scheme(self):
+        with self.assertRaises(ValueError):
+            OpenClawGatewayClient(
+                BridgeConfig(
+                    openclaw_base_url="gateway.example",
+                    default_tool_name="tools.search",
+                )
+            )
+
+    def test_accepts_https_base_url(self):
+        client = OpenClawGatewayClient(
+            BridgeConfig(
+                openclaw_base_url="https://gateway.example",
+                default_tool_name="tools.search",
+            )
+        )
+        self.assertEqual(client._tools_invoke_url(), "https://gateway.example/tools/invoke")
 
 
 if __name__ == "__main__":

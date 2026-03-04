@@ -4,6 +4,7 @@ from dataclasses import dataclass
 import json
 from typing import Any, Protocol
 import urllib.error
+import urllib.parse
 import urllib.request
 
 
@@ -28,8 +29,12 @@ class GatewayClientProtocol(Protocol):
 
 class OpenClawGatewayClient:
     def __init__(self, config: BridgeConfig) -> None:
-        if not config.openclaw_base_url.strip():
+        normalized_base_url = config.openclaw_base_url.strip()
+        if not normalized_base_url:
             raise ValueError("OPENCLAW_BASE_URL must be configured.")
+        parsed = urllib.parse.urlparse(normalized_base_url)
+        if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+            raise ValueError("OPENCLAW_BASE_URL must be a valid http(s) URL.")
         self._config = config
 
     def invoke_tool(self, payload: dict[str, Any]) -> dict[str, Any]:

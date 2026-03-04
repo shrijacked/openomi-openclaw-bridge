@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: openomi-openclaw-bridge
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    autoDeploy: true
+    healthCheckPath: /healthz
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      - key: OPENCLAW_BASE_URL
+        sync: false
+      - key: OPENCLAW_DEFAULT_TOOL
+        sync: false
+      - key: OPENCLAW_API_KEY
+        sync: false
+      - key: OMI_WEBHOOK_TOKEN
+        sync: false
+      - key: OPENCLAW_TIMEOUT_SECONDS
+        value: "20"
