@@ -69,6 +69,19 @@ docker run --rm -p 8080:8080 \
 This repo includes [render.yaml](render.yaml) for one-click Render Blueprint deployment.
 For full production setup and verification, follow [docs/deployment.md](docs/deployment.md).
 
+## Deploy (Render API Script)
+
+You can also deploy/update automatically through Render API:
+
+```bash
+export RENDER_API_KEY="rdr_..."
+export OPENCLAW_BASE_URL="https://gateway.yourdomain.com"
+export OPENCLAW_DEFAULT_TOOL="tools.search"
+export OPENCLAW_API_KEY="your-openclaw-key"
+export OMI_WEBHOOK_TOKEN="your-omi-webhook-token"
+./scripts/deploy_render.sh
+```
+
 ## Omi Chat Tool Setup
 
 Use this webhook URL in your Omi Chat Tool:

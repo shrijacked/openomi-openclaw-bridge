@@ -86,6 +86,40 @@ curl -sS -X POST http://127.0.0.1:8080/omi/chat-tools/openclaw \
    - `OMI_WEBHOOK_TOKEN`
 5. Deploy and wait for health check to pass.
 
+### API-driven deploy (automated)
+
+If you prefer CLI/API automation instead of Dashboard clicks, use:
+
+- `scripts/deploy_render.sh`
+
+Required env vars:
+
+- `RENDER_API_KEY`
+- `OPENCLAW_BASE_URL`
+- `OPENCLAW_DEFAULT_TOOL`
+- `OMI_WEBHOOK_TOKEN`
+
+Optional env vars:
+
+- `OPENCLAW_API_KEY`
+- `RENDER_OWNER_ID` (auto-detected when omitted)
+- `RENDER_SERVICE_NAME` (default `openomi-openclaw-bridge`)
+- `RENDER_REPO_URL` (defaults to git `origin` URL)
+- `RENDER_REPO_BRANCH` (default `main`)
+- `RENDER_PLAN` (default `free`)
+- `RENDER_REGION` (default `oregon`)
+
+Example:
+
+```bash
+export RENDER_API_KEY="rdr_..."
+export OPENCLAW_BASE_URL="https://gateway.yourdomain.com"
+export OPENCLAW_DEFAULT_TOOL="tools.search"
+export OPENCLAW_API_KEY="your-openclaw-key"
+export OMI_WEBHOOK_TOKEN="your-omi-webhook-token"
+./scripts/deploy_render.sh
+```
+
 ## 6) Configure Omi Chat Tool
 
 Set webhook URL in Omi:
@@ -103,6 +137,16 @@ Set auth header in Omi (recommended):
 - [ ] Authorized webhook request returns `200` with `status=ok`
 - [ ] OpenClaw tool invocation succeeds for at least one real query
 - [ ] Omi chat confirms tool output is returned to user
+
+Automated smoke test:
+
+```bash
+export BRIDGE_BASE_URL="https://<your-render-domain>"
+export OMI_WEBHOOK_TOKEN="your-omi-webhook-token"
+export OPENCLAW_TOOL="tools.search"
+export TEST_QUERY="find the latest standup notes"
+./scripts/smoke_test.sh
+```
 
 ## 8) Failure Modes and Actions
 
@@ -127,6 +171,8 @@ Set auth header in Omi (recommended):
 - Container packaging: [Dockerfile](../Dockerfile)
 - Build context hygiene: [.dockerignore](../.dockerignore)
 - Platform deployment config: [render.yaml](../render.yaml)
+- Automated Render deployment: [scripts/deploy_render.sh](../scripts/deploy_render.sh)
+- Automated smoke tests: [scripts/smoke_test.sh](../scripts/smoke_test.sh)
 - Runtime server: [server.py](../src/omi_openclaw_bridge/server.py)
 - Gateway client validation: [bridge.py](../src/omi_openclaw_bridge/bridge.py)
 - Regression tests: [test_bridge.py](../tests/test_bridge.py), [test_server.py](../tests/test_server.py)
